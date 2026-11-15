@@ -16,12 +16,25 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Soft buttons (Movie Max colours, rounded, gentle depth)
+        soft: "rounded-full bg-primary font-bold text-primary-foreground shadow-soft hover:brightness-110 active:scale-[0.97]",
+        softTint:
+          "rounded-full bg-primary/15 font-bold text-primary hover:bg-primary/25 active:scale-[0.97]",
+        softLight:
+          "rounded-full bg-foreground font-bold text-background shadow-soft-neutral hover:bg-foreground/90 active:scale-[0.97]",
+        softGold:
+          "rounded-full bg-gold font-bold text-gold-foreground shadow-soft-neutral hover:brightness-105 active:scale-[0.97]",
+        softInfo:
+          "rounded-full bg-info font-bold text-info-foreground shadow-soft-neutral hover:brightness-110 active:scale-[0.97]",
+        softGhost:
+          "rounded-full border border-foreground/15 bg-foreground/5 font-bold text-foreground hover:bg-foreground/10 active:scale-[0.97]",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
+        xs: "h-7 px-3 text-[11px]",
       },
     },
     defaultVariants: {

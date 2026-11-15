@@ -1,0 +1,222 @@
+/**
+ * Live TV channels come from the Magic 1Xtra TV feed (see tv.functions.ts).
+ * This module holds the shared types and the pure mapping rules so both the
+ * server function and the browser use the same logic.
+ */
+
+export interface Channel {
+  id: string;
+  name: string;
+  short: string;
+  categoryId: number | null;
+  /** Category name as published by the feed, e.g. "News" */
+  category: string;
+  /** HTTPS HLS link or an app-local playback relay, or "" when unavailable */
+  stream: string;
+  /** False when the feed only has a plain http link: listed, but browsers block it on https pages */
+  playable: boolean;
+  /** Absolute logo URL, or null to fall back to initials */
+  logo: string | null;
+  /** Tailwind background class for the channel badge (design-system token) */
+  badge: string;
+  description: string;
+  views: number;
+}
+
+export interface TvCategory {
+  id: number;
+  name: string;
+}
+
+/** Feed asset host for relative image paths such as "assets/uploads/tv/images/x.jpg". */
+export const TV_ASSET_ROOT = "https://tvapp.hostherb.com/";
+
+const BADGES = [
+  "bg-ch-news",
+  "bg-ch-sport",
+  "bg-ch-science",
+  "bg-ch-film",
+  "bg-ch-kids",
+  "bg-ch-music",
+  "bg-ch-biz",
+];
+
+function hash(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+export function initials(name: string) {
+  const words = name
+    .replace(/\(.*?\)/g, "")
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean);
+  if (words.length === 0) return "TV";
+  if (words.length === 1) return (words[0] as string).slice(0, 3).toUpperCase();
+  return words
+    .slice(0, 3)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+}
+
+function stripHtml(s: string) {
+  return s
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function absUrl(v: unknown): string | null {
+  const s = typeof v === "string" ? v.trim() : "";
+  if (!s) return null;
+  if (/^https:\/\//i.test(s)) return s;
+  if (/^https?:\/\//i.test(s)) return null; // plain http images are blocked on https pages
+  return TV_ASSET_ROOT + s.replace(/^\/+/, "");
+}
+
+interface RawTv {
+  id?: unknown;
+  title?: unknown;
+  category?: unknown;
+  tv_category_id?: unknown;
+  description?: unknown;
+  thumbnail_image?: unknown;
+  logo_url?: unknown;
+  total_views?: unknown;
+  playback_mode?: unknown;
+  external_source?: unknown;
+  stream_status?: unknown;
+  other_url?: unknown;
+  video?: unknown;
+  stream_url?: unknown;
+}
+
+function isSuperSportRelayUrl(rawUrl: string, name: string, category: string) {
+  if (category.toLowerCase() !== "super sport" || !/^super\s?sport\b/i.test(name)) return false;
+  try {
+    const url = new URL(rawUrl);
+    const parts = url.pathname.split("/").filter(Boolean);
+    return (
+      url.origin === "http://197.220.88.26:2200" &&
+      parts[0] === "AFR-EX" &&
+      /^SuperSport_/i.test(parts[1] ?? "") &&
+      parts.length >= 3 &&
+      /\.m3u8$/i.test(parts.at(-1) ?? "")
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Turns one feed row into a playable channel, or null when the web player cannot play it:
+ * MTN secure channels, offline rows, and non-HLS streams are excluded. Plain HTTP HLS is
+ * only routed through the server relay for the allowlisted Super Sport feed category/source.
+ */
+export function toChannel(raw: RawTv): Channel | null {
+  const mode = String(raw.playback_mode ?? "").toLowerCase();
+  const source = String(raw.external_source ?? "").toLowerCase();
+  if (mode.includes("mtn") || source.includes("mtn")) return null;
+  if (String(raw.stream_status ?? "").toLowerCase() === "offline") return null;
+
+  const name = String(raw.title ?? "").trim() || "Untitled channel";
+  const id = String(raw.id ?? name);
+  const cat = (raw.category ?? {}) as { id?: unknown; name?: unknown };
+  const category = typeof cat.name === "string" && cat.name.trim() ? cat.name.trim() : "Live TV";
+  const catId = Number(raw.tv_category_id ?? cat.id);
+
+  const links = [raw.other_url, raw.video, raw.stream_url]
+    .map((v) => (typeof v === "string" ? v.trim() : ""))
+    .filter((u) => u.toLowerCase().includes(".m3u8") && !u.includes("mtntv.co.ug"));
+  const secure = links.find((u) => /^https:\/\//i.test(u));
+  const insecure = links.find((u) => /^http:\/\//i.test(u));
+  const relayAllowed = Boolean(insecure && isSuperSportRelayUrl(insecure, name, category));
+  if (!secure && !insecure) return null;
+  const stream =
+    secure ?? (relayAllowed ? `/api/sports-stream?channel=${encodeURIComponent(id)}` : "");
+
+  let description = stripHtml(String(raw.description ?? ""));
+  if (
+    !description ||
+    description.toLowerCase() === name.toLowerCase() ||
+    /^imported from/i.test(description)
+  ) {
+    description = `Live ${category.toLowerCase()} channel.`;
+  }
+
+  return {
+    id,
+    name,
+    short: initials(name),
+    categoryId: Number.isFinite(catId) && catId > 0 ? catId : null,
+    category,
+    stream,
+    playable: Boolean(secure || relayAllowed),
+    logo: absUrl(raw.thumbnail_image) ?? absUrl(raw.logo_url),
+    badge: BADGES[hash(id) % BADGES.length] as string,
+    description,
+    views: Number(raw.total_views) || 0,
+  };
+}
+
+export function toChannels(rows: unknown): Channel[] {
+  if (!Array.isArray(rows)) return [];
+  const seen = new Set<string>();
+  const out: Channel[] = [];
+  for (const r of rows) {
+    if (!r || typeof r !== "object") continue;
+    const c = toChannel(r as RawTv);
+    if (c && !seen.has(c.id)) {
+      seen.add(c.id);
+      out.push(c);
+    }
+  }
+  return out;
+}
+
+/** Placeholder shown in the player area until the first channel arrives. */
+export const NO_CHANNEL: Channel = {
+  id: "none",
+  name: "Loading channels…",
+  short: "TV",
+  categoryId: null,
+  category: "Live TV",
+  stream: "",
+  playable: false,
+  logo: null,
+  badge: "bg-ch-film",
+  description: "Pick a channel from the list.",
+  views: 0,
+};
+
+export type ShelfTab = "trending" | "music" | "movies";
+
+export const SHELF_TABS: { id: ShelfTab; label: string }[] = [
+  { id: "trending", label: "Trending" },
+  { id: "music", label: "Music" },
+  { id: "movies", label: "Movies" },
+];
+
+/** Feed category each bottom-bar tab draws from. */
+export const SHELF_CATEGORY: Record<ShelfTab, string> = {
+  trending: "1Xtra On Demand",
+  music: "Music",
+  movies: "Movies",
+};
+
+/** Trending = most watched first. Music/Movies keep the feed's own order. */
+export function shelfChannels(channels: Channel[], tab: ShelfTab): Channel[] {
+  if (tab === "trending") return [...channels].sort((a, b) => b.views - a.views).slice(0, 20);
+  return channels.slice(0, 20);
+}
+
+/** Default category opened on first visit: the Magic 1Xtra local channels. */
+export const DEFAULT_CATEGORY_NAME = "1Xtra On Demand";
+
+export function findCategoryId(categories: TvCategory[], name: string): number | null {
+  const n = name.toLowerCase();
+  return categories.find((c) => c.name.toLowerCase() === n)?.id ?? null;
+}

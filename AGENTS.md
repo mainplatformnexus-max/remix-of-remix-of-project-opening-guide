@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Live TV channels come from the Magic 1Xtra TV feed (magic1xtra.com api-proxy) fetched only in server functions because the feed sends no CORS headers. `toChannel` drops MTN secure/DRM, offline and non-HLS rows. Plain-http HLS remains unplayable except Super Sport feed rows that are relayed by `src/routes/api.sports-stream.ts`; that endpoint must validate the feed channel and fixed upstream host/path and must never become an arbitrary URL proxy. Channels are played through `src/components/tv/HlsPlayer.tsx`, which dynamically imports hls.js inside an effect — hls.js is browser-only and must never be imported at module scope (SSR runs on workerd).
+- The app is dark-only; colour tokens live in `:root` of `src/styles.css` with no `.dark` block, so add new tokens there.
