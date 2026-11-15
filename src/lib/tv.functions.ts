@@ -1,5 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
-import { toChannels, type Channel, type TvCategory } from "./channels";
+import {
+  POPULAR_PICKS,
+  POPULAR_WHOLE_CATEGORIES,
+  popularChannels,
+  toChannels,
+  type Channel,
+  type TvCategory,
+} from "./channels";
 
 const FEED = "https://magic1xtra.com/api-proxy.php?path=";
 const PER_PAGE = 100;
@@ -119,3 +126,58 @@ export const searchTvs = createServerFn({ method: "GET" })
       return { ...empty, error: "Search is unavailable right now. Try again." };
     }
   });
+
+const POPULAR_TTL = 10 * 60_000;
+let popularCache: { at: number; page: TvPage } | null = null;
+
+async function feedRetry(path: string): Promise<FeedBody> {
+  try {
+    return await feed(path);
+  } catch {
+    await new Promise((r) => setTimeout(r, 1200));
+    return feed(path);
+  }
+}
+
+/** Runs `fn` over `items` with at most `limit` running at once (the feed rate-limits bursts). */
+async function pool<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const out: R[] = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      out[i] = await fn(items[i] as T);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return out;
+}
+
+/**
+ * The Popular category: Movie Max plus every popular pick the feed currently lists as online
+ * with a playable stream. Cached for a few minutes so most visits cost no feed requests.
+ */
+export const getPopularTvs = createServerFn({ method: "GET" }).handler(async (): Promise<TvPage> => {
+  if (popularCache && Date.now() - popularCache.at < POPULAR_TTL) return popularCache.page;
+  const whole = POPULAR_WHOLE_CATEGORIES.map((id) => `/categories/${id}/tvs?${tvQs(1, "")}`);
+  const searched = POPULAR_PICKS.filter((p) => !POPULAR_WHOLE_CATEGORIES.includes(p.categoryId)).map(
+    (p) => `/categories/${p.categoryId}/tvs?${tvQs(1, p.title)}`,
+  );
+  let failed = 0;
+  const found = (
+    await pool([...whole, ...searched], 6, (path) =>
+      feedRetry(path)
+        .then((b) => toChannels(b.data))
+        .catch((e) => {
+          failed++;
+          console.error("getPopularTvs lookup failed", path, e);
+          return [] as Channel[];
+        }),
+    )
+  ).flat();
+  const channels = popularChannels(found);
+  const page: TvPage = { channels, page: 1, totalPages: 1, count: channels.length, error: null };
+  // Only cache a complete answer, so a rate-limited lookup is retried on the next visit.
+  if (failed === 0) popularCache = { at: Date.now(), page };
+  return page;
+});

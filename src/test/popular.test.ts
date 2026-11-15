@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { QueryClient } from "@tanstack/react-query";
-import { MOVIE_MAX, POPULAR_ID, popularChannels } from "@/lib/channels";
-import { tvChannelsQuery } from "@/lib/tv-queries";
+import { MOVIE_MAX, NO_CHANNEL, POPULAR_PICKS, popularChannels, type Channel } from "@/lib/channels";
+
+const feedChannel = (id: string, playable = true): Channel => ({ ...NO_CHANNEL, id, name: id, playable, stream: playable ? "https://x/y.m3u8" : "" });
 
 describe("Popular category", () => {
   it("puts Movie Max first, playing the Movie Max stream", () => {
@@ -11,8 +11,16 @@ describe("Popular category", () => {
     expect(first?.playable).toBe(true);
   });
 
-  it("lists Movie Max when the Popular category is opened", async () => {
-    const data = await new QueryClient().fetchInfiniteQuery(tvChannelsQuery(POPULAR_ID, "", [1, 2]));
-    expect(data.pages[0]?.channels[0]?.id).toBe(MOVIE_MAX.id);
+  it("adds found popular channels after Movie Max, in the popular list order", () => {
+    const [a, b] = POPULAR_PICKS;
+    const ids = popularChannels([feedChannel(b!.id), feedChannel(a!.id), feedChannel("not-popular")]).map((c) => c.id);
+    expect(ids).toEqual([MOVIE_MAX.id, a!.id, b!.id]);
+  });
+
+  it("leaves out popular channels the feed no longer lists or cannot play", () => {
+    const [a, b] = POPULAR_PICKS;
+    const ids = popularChannels([feedChannel(a!.id, false)]).map((c) => c.id);
+    expect(ids).toEqual([MOVIE_MAX.id]);
+    expect(ids).not.toContain(b!.id);
   });
 });

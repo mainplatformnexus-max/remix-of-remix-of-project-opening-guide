@@ -236,9 +236,69 @@ export const MOVIE_MAX: Channel = {
   views: 0,
 };
 
-/** Channels in Popular, in display order. More popular channels will be added after Movie Max. */
-export function popularChannels(): Channel[] {
-  return [MOVIE_MAX];
+/**
+ * Feed channels from the user's popular-channel lists that the feed carries with a stream the
+ * web player can play. Each is looked up live (by title inside its feed category) and only
+ * shown while the feed still lists it as online and playable. Order = order shown in Popular.
+ * Left out on purpose: matches whose stream refuses web players (no CORS), e.g. BBS TV, Classica.
+ */
+export interface PopularPick {
+  /** Feed channel id */
+  id: string;
+  /** Feed title, used to search the category */
+  title: string;
+  /** Feed category the channel lives in */
+  categoryId: number;
+}
+
+/** Feed categories small enough to load whole (one request) instead of a search per channel. */
+export const POPULAR_WHOLE_CATEGORIES = [7, 193];
+
+export const POPULAR_PICKS: PopularPick[] = [
+  // Uganda & East Africa
+  { id: "13579", title: "NTV Uganda", categoryId: 7 },
+  { id: "8", title: "Bukedde TV", categoryId: 7 },
+  { id: "9", title: "Bukedde TV2", categoryId: 7 },
+  { id: "13580", title: "Spark TV", categoryId: 7 },
+  { id: "10", title: "TV West", categoryId: 7 },
+  { id: "13697", title: "Tayari West TV", categoryId: 7 },
+  { id: "5321", title: "K24", categoryId: 12 },
+  { id: "11468", title: "TV10", categoryId: 12 },
+  // Sport
+  { id: "13710", title: "SuperSport LaLiga", categoryId: 193 },
+  { id: "13712", title: "SuperSport WWE", categoryId: 193 },
+  { id: "12779", title: "WWE Superstar Central", categoryId: 12 },
+  { id: "4177", title: "Fuel TV", categoryId: 6 },
+  // News
+  { id: "7", title: "BBC News", categoryId: 10 },
+  { id: "6", title: "CNN", categoryId: 10 },
+  { id: "567", title: "Al Jazeera", categoryId: 10 },
+  { id: "471", title: "Africanews English", categoryId: 10 },
+  { id: "4134", title: "France 24 FAST English", categoryId: 12 },
+  { id: "7092", title: "News Central", categoryId: 10 },
+  { id: "13686", title: "Bloomberg", categoryId: 7 },
+  { id: "7124", title: "NHK World-Japan", categoryId: 20 },
+  // Music & entertainment
+  { id: "4677", title: "HIPTV", categoryId: 12 },
+  // Documentary
+  { id: "2406", title: "CGTN Documentary", categoryId: 43 },
+  { id: "12681", title: "WildEarth", categoryId: 43 },
+  // Faith
+  { id: "3873", title: "Faith TV", categoryId: 11 },
+  { id: "3064", title: "Daystar TV", categoryId: 11 },
+  { id: "9553", title: "SBN TV", categoryId: 11 },
+  { id: "3829", title: "EWTN Africa-Asia", categoryId: 11 },
+  { id: "10320", title: "Sunna TV", categoryId: 12 },
+];
+
+/**
+ * Channels in Popular, in display order: Movie Max first, then every popular pick found live
+ * in the feed (`found`) that the web player can play. Picks missing from `found` are left out.
+ */
+export function popularChannels(found: Channel[] = []): Channel[] {
+  const byId = new Map(found.map((c) => [c.id, c]));
+  const picks = POPULAR_PICKS.map((p) => byId.get(p.id)).filter((c): c is Channel => Boolean(c?.playable));
+  return [MOVIE_MAX, ...picks];
 }
 
 export function findCategoryId(categories: TvCategory[], name: string): number | null {
