@@ -6,9 +6,9 @@ import {
   type ComponentType,
   type SVGProps,
 } from "react";
-import { ChevronLeft, ChevronRight, Loader2, Music2, Search, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame, Loader2, Music2, Search, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Channel, TvCategory } from "@/lib/channels";
+import { POPULAR_ID, POPULAR_NAME, type Channel, type TvCategory } from "@/lib/channels";
 import { ChannelBadge } from "./ChannelBadge";
 import { FilmIcon, KidsIcon, MenuIcon, NewsIcon, ScienceIcon, SportIcon, TvIcon } from "./CategoryIcons";
 
@@ -77,6 +77,7 @@ export function ChannelTable({
   const [edge, setEdge] = useState({ left: false, right: true });
 
   const chips: { id: number | null; label: string; icon: Icon; tint: string }[] = [
+    { id: POPULAR_ID, label: POPULAR_NAME, icon: Flame as Icon, tint: "bg-primary/25" },
     { id: null, label: "All", icon: MenuIcon, tint: "bg-ch-sport/25" },
     ...categories.map((c, i) => ({
       id: c.id,

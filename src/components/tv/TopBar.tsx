@@ -1,4 +1,5 @@
-import { Search, LogIn, Tv, Film, Crown } from "lucide-react";
+import { Search, LogIn, Film, Crown } from "lucide-react";
+import movieMaxLogo from "@/assets/moviemax-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -25,9 +26,7 @@ export function TopBar({
   return (
     <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border bg-frame px-3 py-2 sm:px-4">
       <a href="https://luofilm.site" className="flex shrink-0 items-center gap-2">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-hot shadow-glow">
-          <Tv className="h-4 w-4 text-primary-foreground" />
-        </span>
+        <img src={movieMaxLogo.url} alt="Movie Max" className="h-8 w-8 shrink-0 object-contain" />
         <span className="leading-none">
           <span className="block text-sm font-extrabold tracking-wide text-cyan">MOVIE MAX</span>
           <span className="block text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground">

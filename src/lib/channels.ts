@@ -3,6 +3,7 @@
  * This module holds the shared types and the pure mapping rules so both the
  * server function and the browser use the same logic.
  */
+import movieMaxLogo from "@/assets/moviemax-logo.png.asset.json";
 
 export interface Channel {
   id: string;
@@ -213,8 +214,32 @@ export function shelfChannels(channels: Channel[], tab: ShelfTab): Channel[] {
   return channels.slice(0, 20);
 }
 
-/** Default category opened on first visit: the Magic 1Xtra local channels. */
-export const DEFAULT_CATEGORY_NAME = "1Xtra On Demand";
+/**
+ * "Popular" is the app's own category, shown before every feed category and opened by default.
+ * Its id is negative so it can never clash with a feed category id.
+ */
+export const POPULAR_ID = -1;
+export const POPULAR_NAME = "Popular";
+
+/** Movie Max's own channel: first in Popular and the channel that plays on first visit. */
+export const MOVIE_MAX: Channel = {
+  id: "moviemax",
+  name: "Movie Max",
+  short: "MM",
+  categoryId: POPULAR_ID,
+  category: POPULAR_NAME,
+  stream: "https://watch.hostherb.com/tv-257/index.m3u8",
+  playable: true,
+  logo: movieMaxLogo.url,
+  badge: "bg-ch-film",
+  description: "Movie Max live — movies, series and entertainment around the clock.",
+  views: 0,
+};
+
+/** Channels in Popular, in display order. More popular channels will be added after Movie Max. */
+export function popularChannels(): Channel[] {
+  return [MOVIE_MAX];
+}
 
 export function findCategoryId(categories: TvCategory[], name: string): number | null {
   const n = name.toLowerCase();

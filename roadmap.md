@@ -8,3 +8,5 @@
 - [x] Channels come from the Magic 1Xtra TV feed (categories, All, search across all channels)
 - [x] YouTube-style player (floating control pills, auto-hide, settings/quality menu, unmute, PiP, fullscreen)
 - [x] Keep plain-http channels (e.g. Super Sport) listed (no lock) with an explanation in the player; they can't play (not relayed)
+- [x] Popular category first and default; Movie Max first in Popular with its logo; logo used as site logo + favicon
+- [ ] Add the user's list of popular channels from the API to Popular (waiting on the list)

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Settings2 } from "lucide-react";
 import poster from "@/assets/live-stadium-poster.jpg";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { DEFAULT_CATEGORY_NAME, NO_CHANNEL, findCategoryId, type Channel } from "@/lib/channels";
+import { NO_CHANNEL, POPULAR_ID, findCategoryId, type Channel } from "@/lib/channels";
 import { tvCategoriesQuery, tvChannelsQuery } from "@/lib/tv-queries";
 import type { TvListPage, TvPageParam } from "@/lib/tv-queries";
 import { HlsPlayer, type PlayerStats, type PlayerStatus, type QualityLevel } from "@/components/tv/HlsPlayer";
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
   }),
   loader: async ({ context }) => {
     const { categories } = await context.queryClient.ensureQueryData(tvCategoriesQuery());
-    const defaultId = findCategoryId(categories, DEFAULT_CATEGORY_NAME);
+    const defaultId: number | null = POPULAR_ID;
     const allIds = categories.map((c) => c.id);
     const first = await context.queryClient.ensureInfiniteQueryData(tvChannelsQuery(defaultId, "", allIds));
     // Returned (not only cached) so the browser starts with the same channels the server drew.

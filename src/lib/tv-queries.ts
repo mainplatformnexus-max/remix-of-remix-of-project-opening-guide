@@ -1,4 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { POPULAR_ID, popularChannels } from "./channels";
 import { getTvCategories, getTvPage, searchTvs, type TvPage } from "./tv.functions";
 
 export const tvCategoriesQuery = () =>
@@ -27,6 +28,10 @@ export const tvChannelsQuery = (categoryId: number | null, search: string, allId
     queryKey: ["tv-channels", categoryId, search],
     queryFn: async ({ pageParam }): Promise<TvListPage> => {
       if (search) return { ...(await searchTvs({ data: { search } })), idx: 0 };
+      if (categoryId === POPULAR_ID) {
+        const channels = popularChannels();
+        return { channels, page: 1, totalPages: 1, count: channels.length, error: null, idx: 0 };
+      }
       const id = categoryId ?? allIds[pageParam.idx];
       if (id == null) return EMPTY;
       return { ...(await getTvPage({ data: { categoryId: id, page: pageParam.page } })), idx: pageParam.idx };
