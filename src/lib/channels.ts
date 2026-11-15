@@ -15,6 +15,7 @@ import traceHitsLogo from "@/assets/channels/tracehits-logo.png.asset.json";
 import traceSportStarsLogo from "@/assets/channels/tracesportstars-logo.png.asset.json";
 import traceUrbanLogo from "@/assets/channels/traceurban-logo.png.asset.json";
 import zeeOneLogo from "@/assets/channels/zeeone-logo.png.asset.json";
+import kixLogo from "@/assets/channels/kix-logo.png.asset.json";
 
 export interface Channel {
   id: string;
@@ -325,7 +326,8 @@ const direct = (
 /**
  * Channels the user gave as direct links (not in the feed). Each link was checked to answer
  * with CORS headers so the web player can load it. DRM-protected links (beIN Sports 1-3 DASH,
- * Nat Geo Wild, Jim Jam) and geo-blocked links (KIX) are left out because they cannot play.
+ * Nat Geo Wild, Jim Jam) are left out because they cannot play. KIX uses a tokenised link that
+ * may expire; ask the user for a fresh link when it stops playing.
  */
 export const DIRECT_CHANNELS: Channel[] = [
   direct("starplus", "STAR PLUS", "Indian drama and entertainment", "https://d1taaads3ztvmu.cloudfront.net/120723/smil:lifeokuk.smil/chunklist_b2628000.m3u8", starPlusLogo.url),
@@ -339,6 +341,7 @@ export const DIRECT_CHANNELS: Channel[] = [
   direct("skynews", "SKY NEWS", "breaking news from the UK and the world", "https://d3f4oii5n0oeqi.cloudfront.net/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod_default_tcl-ams-aws/c441d4f7-9f8c-491f-9f77-611a54c397b0/4.m3u8", skyNewsLogo.url, "bg-ch-news"),
   direct("mutv", "MUTV", "Manchester United's own channel", "https://fastly.live.brightcove.com/6374054671112/eu-west-1/6058004203001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiYXplMnp5LmVncmVzcy55ODN1ZWIiLCJhY2NvdW50X2lkIjoiNjA1ODAwNDIwMzAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyI2MDU4MDA0MjAzMDAxIl0sImp0aSI6IjYzNzQwNTQ2NzExMTIifQ.3FmuTna3DAmY7xlhK5fk6LMrosrtrR5VsU2QOgYO5y4/chunklist__3.m3u8", mutvLogo.url, "bg-ch-sport"),
   direct("tracesportstars", "TRACE SPORT STARS", "sport stars and their stories", "https://tracesportstars-klowdtv.amagi.tv/playlist1080P.m3u8", traceSportStarsLogo.url, "bg-ch-sport"),
+  direct("kix", "KIX", "martial arts and action movies", "https://ec04-pop1-hlc.tv360.vn/bpk-token/33fxuv3xnvwvpggl3iy57s32k7pmw6sx/bpk-tv/166/output/166-audio_214835_und=214800-video=5254000.m3u8", kixLogo.url),
 ];
 
 /**
@@ -349,7 +352,7 @@ export const POPULAR_ORDER: string[] = [
   MOVIE_MAX.id,
   "13709", "13708", "13710", "13712", "13579", "8", "9", "5", "13697", "10", "7", "11",
   "starplus", "nollyafrica", "zeeone", "traceurban", "traceukhits", "beinxtra", "natgeo",
-  "telemundo", "skynews", "mutv", "tracesportstars",
+  "telemundo", "skynews", "mutv", "tracesportstars", "kix",
   ...POPULAR_PICKS.map((p) => p.id),
 ];
 

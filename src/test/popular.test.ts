@@ -31,11 +31,11 @@ describe("Popular category", () => {
     ]);
   });
 
-  it("puts the direct-link channels after Wan Luo TV, Star Plus first and Trace Sport Stars last", () => {
+  it("puts the direct-link channels after Wan Luo TV, Star Plus first and KIX last", () => {
     const list = popularChannels([feedChannel("11")]).map((c) => c.id);
-    expect(list.slice(list.indexOf("11") + 1, list.indexOf("11") + 12)).toEqual([
+    expect(list.slice(list.indexOf("11") + 1, list.indexOf("11") + 13)).toEqual([
       "starplus", "nollyafrica", "zeeone", "traceurban", "traceukhits", "beinxtra", "natgeo",
-      "telemundo", "skynews", "mutv", "tracesportstars",
+      "telemundo", "skynews", "mutv", "tracesportstars", "kix",
     ]);
   });
 
