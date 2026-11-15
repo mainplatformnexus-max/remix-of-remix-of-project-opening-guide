@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { QueryClient } from "@tanstack/react-query";
 import { MOVIE_MAX, POPULAR_ID, popularChannels } from "@/lib/channels";
 import { tvChannelsQuery } from "@/lib/tv-queries";
 
@@ -11,10 +12,7 @@ describe("Popular category", () => {
   });
 
   it("lists Movie Max when the Popular category is opened", async () => {
-    const q = tvChannelsQuery(POPULAR_ID, "", [1, 2]);
-    const page = await (q.queryFn as (ctx: { pageParam: { idx: number; page: number } }) => Promise<{ channels: { id: string }[] }>)({
-      pageParam: { idx: 0, page: 1 },
-    });
-    expect(page.channels[0]?.id).toBe(MOVIE_MAX.id);
+    const data = await new QueryClient().fetchInfiniteQuery(tvChannelsQuery(POPULAR_ID, "", [1, 2]));
+    expect(data.pages[0]?.channels[0]?.id).toBe(MOVIE_MAX.id);
   });
 });
