@@ -178,14 +178,14 @@ function LiveTv() {
   };
 
   return (
-    <main className="flex h-dvh flex-col overflow-hidden bg-background p-1.5 sm:p-3 lg:p-4">
-      <div className="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col overflow-hidden rounded-lg bg-frame shadow-frame">
+    <main className="flex h-dvh flex-col overflow-hidden bg-background p-0 sm:p-3 lg:p-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col overflow-hidden rounded-none bg-frame shadow-frame sm:rounded-lg">
         <TopBar tab={topTab} onTab={onTopTab} query={query} onQuery={setQuery} />
 
         <div className="flex min-h-0 flex-1 flex-col gap-2 p-2 short:grid short:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] short:grid-rows-[auto_minmax(0,1fr)] lg:grid lg:grid-cols-[230px_minmax(0,1fr)_300px] lg:grid-rows-[minmax(0,1fr)] xl:grid-cols-[250px_minmax(0,1fr)_320px]">
           {/* Player column */}
           <div className="order-1 flex min-w-0 shrink-0 flex-col gap-2 short:row-span-2 short:min-h-0 lg:order-none lg:col-start-2 lg:row-start-1 lg:min-h-0">
-            <div className="flex min-h-0 flex-col overflow-hidden rounded-lg bg-panel-raised short:flex-1 lg:flex-1">
+            <div className="-mx-2 flex min-h-0 flex-col overflow-hidden rounded-none bg-panel-raised sm:-mx-5 sm:rounded-lg lg:mx-0 short:flex-1 lg:flex-1">
             <div className="flex shrink-0 items-center justify-between gap-2 px-3 py-1.5 text-[11px]">
               <span className="flex min-w-0 items-center gap-1.5 rounded-full bg-panel px-2.5 py-1 font-semibold">
                 <span className="truncate">{current.name}</span>
