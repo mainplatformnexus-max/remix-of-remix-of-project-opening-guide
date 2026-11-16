@@ -1,4 +1,4 @@
-import { Star, Plus, Check } from "lucide-react";
+import { Star, Plus, Check, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Channel } from "@/lib/channels";
@@ -45,6 +45,18 @@ export function NowWatching({
           <span className="text-center text-[11px] text-foreground/75">{channel.description}</span>
         </div>
       </section>
+
+      <Button
+        asChild
+        variant="soft"
+        size="sm"
+        className="shrink-0 w-full text-[10px] uppercase tracking-wide"
+      >
+        <a href="https://moviemaxtv.luofilm.site/" target="_blank" rel="noopener noreferrer">
+          <Mail className="h-3.5 w-3.5" />
+          Contact
+        </a>
+      </Button>
 
       <dl className="shrink-0 divide-y divide-border/60 overflow-hidden rounded-lg bg-panel-raised text-[11px]">
         {rows.map(([k, v]) => (
