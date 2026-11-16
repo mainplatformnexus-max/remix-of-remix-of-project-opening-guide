@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nextWarmTarget, resolveStreamSource } from "@/lib/hls-preloader";
+import { isRelay, nextWarmTarget, resolveStreamSource } from "@/lib/hls-preloader";
 
 describe("HLS stream preloading", () => {
   it("resolves the same-origin Super Sport relay and rejects non-web URLs", () => {
@@ -48,5 +48,10 @@ describe("HLS stream preloading", () => {
       url: "https://video.example/live/new.ts",
     });
     expect(nextWarmTarget("#EXTM3U", new URL("https://video.example/live/index.m3u8"))).toBeNull();
+  });
+
+  it("treats only the Super Sport relay as a relay stream", () => {
+    expect(isRelay("https://app.example/api/sports-stream?channel=13709")).toBe(true);
+    expect(isRelay("https://video.example/live/index.m3u8")).toBe(false);
   });
 });

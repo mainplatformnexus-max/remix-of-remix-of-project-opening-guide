@@ -197,7 +197,11 @@ export function HlsPlayer({ src, poster, quality, onQuality, onStatus, onStats, 
       const { default: Hls } = await import("hls.js");
       if (cancelled) return;
       if (Hls.isSupported()) {
+        // Relayed Super Sport feeds have one large full-HD quality, so stream each piece
+        // into the player as it arrives instead of waiting for the whole piece first.
+        const relayed = src.startsWith("/api/sports-stream");
         const hls = new Hls({
+          ...(relayed ? { progressive: true, startFragPrefetch: true } : {}),
           lowLatencyMode: true,
           backBufferLength: 30,
           startLevel: 0,

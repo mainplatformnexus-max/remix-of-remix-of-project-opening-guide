@@ -1,7 +1,8 @@
 const FEED = "https://magic1xtra.com/api-proxy.php?path=";
 const SUPERSPORT_CATEGORY_ID = 193;
 const UPSTREAM_ORIGIN = "http://197.220.88.26:2200";
-const SOURCE_CACHE_MS = 30_000;
+/** Super Sport links in the feed rarely change; a long cache keeps the feed lookup off the play path. */
+const SOURCE_CACHE_MS = 10 * 60_000;
 
 interface FeedRow {
   id?: unknown;
@@ -100,6 +101,7 @@ async function loadSources(): Promise<Map<string, URL>> {
 
 async function getSources(): Promise<Map<string, URL>> {
   if (sourceCache && sourceCache.expiresAt > Date.now()) return sourceCache.sources;
+  const stale = sourceCache?.sources;
   if (!sourceRefresh) {
     sourceRefresh = loadSources()
       .then((sources) => {
@@ -109,6 +111,11 @@ async function getSources(): Promise<Map<string, URL>> {
       .finally(() => {
         sourceRefresh = null;
       });
+  }
+  // Serve the last known links straight away while the refresh runs in the background.
+  if (stale) {
+    sourceRefresh.catch(() => undefined);
+    return stale;
   }
   return sourceRefresh;
 }

@@ -5,7 +5,17 @@ type WarmTarget = { kind: "playlist" | "media"; url: string };
 const queued = new Set<string>();
 const attempted = new Set<string>();
 const queue: string[] = [];
+const inFlight = new Set<AbortController>();
 let active = 0;
+
+/** Same-origin Super Sport relay: its single full-HD pieces are large and go stale in seconds. */
+function isRelay(src: string) {
+  try {
+    return new URL(src).pathname === "/api/sports-stream";
+  } catch {
+    return false;
+  }
+}
 
 export function resolveStreamSource(src: string, baseUrl: URL): string | null {
   try {
@@ -63,12 +73,14 @@ function nextWarmTarget(manifest: string, baseUrl: URL): WarmTarget | null {
 
 async function fetchPlaylist(
   url: string,
+  signal: AbortSignal,
 ): Promise<{ response: Response; manifest: string } | null> {
   try {
     const response = await fetch(url, {
       cache: "force-cache",
       credentials: "omit",
       mode: "cors",
+      signal,
     });
     if (!response.ok) return null;
     return { response, manifest: await response.text() };
@@ -78,9 +90,10 @@ async function fetchPlaylist(
   }
 }
 
-async function warmStream(src: string): Promise<void> {
-  const first = await fetchPlaylist(src);
-  if (!first) return;
+async function warmStream(src: string, signal: AbortSignal): Promise<void> {
+  const first = await fetchPlaylist(src, signal);
+  // Relay streams: warming the playlist readies the relay; their video pieces are not worth the data.
+  if (!first || isRelay(src)) return;
 
   const next = nextWarmTarget(first.manifest, new URL(first.response.url || src));
   if (!next) return;
@@ -91,6 +104,7 @@ async function warmStream(src: string): Promise<void> {
         cache: "force-cache",
         credentials: "omit",
         mode: "cors",
+        signal,
       });
       if (response.ok) await response.arrayBuffer();
     } catch {
@@ -99,7 +113,7 @@ async function warmStream(src: string): Promise<void> {
     return;
   }
 
-  const mediaPlaylist = await fetchPlaylist(next.url);
+  const mediaPlaylist = await fetchPlaylist(next.url, signal);
   if (!mediaPlaylist) return;
   const media = nextWarmTarget(
     mediaPlaylist.manifest,
@@ -112,6 +126,7 @@ async function warmStream(src: string): Promise<void> {
       cache: "force-cache",
       credentials: "omit",
       mode: "cors",
+      signal,
     });
     if (response.ok) await response.arrayBuffer();
   } catch {
@@ -125,10 +140,13 @@ function pumpQueue() {
     if (!src) continue;
     queued.delete(src);
     active++;
-    void warmStream(src)
+    const controller = new AbortController();
+    inFlight.add(controller);
+    void warmStream(src, controller.signal)
       .catch(() => undefined)
       .finally(() => {
-        attempted.add(src);
+        inFlight.delete(controller);
+        if (!controller.signal.aborted) attempted.add(src);
         active--;
         pumpQueue();
       });
@@ -148,4 +166,15 @@ export function preloadStreams(sources: string[]): void {
   pumpQueue();
 }
 
-export { nextWarmTarget };
+/**
+ * Stop all warming so the channel the viewer just picked gets the whole connection.
+ * Unfinished channels are warmed again on the next preloadStreams call.
+ */
+export function cancelPreloads(): void {
+  queue.length = 0;
+  queued.clear();
+  for (const controller of inFlight) controller.abort();
+  inFlight.clear();
+}
+
+export { nextWarmTarget, isRelay };

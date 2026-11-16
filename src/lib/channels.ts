@@ -341,7 +341,7 @@ export const DIRECT_CHANNELS: Channel[] = [
   direct("skynews", "SKY NEWS", "breaking news from the UK and the world", "https://d3f4oii5n0oeqi.cloudfront.net/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod_default_tcl-ams-aws/c441d4f7-9f8c-491f-9f77-611a54c397b0/4.m3u8", skyNewsLogo.url, "bg-ch-news"),
   direct("mutv", "MUTV", "Manchester United's own channel", "https://fastly.live.brightcove.com/6374054671112/eu-west-1/6058004203001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiYXplMnp5LmVncmVzcy55ODN1ZWIiLCJhY2NvdW50X2lkIjoiNjA1ODAwNDIwMzAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyI2MDU4MDA0MjAzMDAxIl0sImp0aSI6IjYzNzQwNTQ2NzExMTIifQ.3FmuTna3DAmY7xlhK5fk6LMrosrtrR5VsU2QOgYO5y4/chunklist__3.m3u8", mutvLogo.url, "bg-ch-sport"),
   direct("tracesportstars", "TRACE SPORT STARS", "sport stars and their stories", "https://tracesportstars-klowdtv.amagi.tv/playlist1080P.m3u8", traceSportStarsLogo.url, "bg-ch-sport"),
-  direct("kix", "KIX", "martial arts and action movies", "https://ec04-pop1-hlc.tv360.vn/bpk-token/33fxuv3xnvwvpggl3iy57s32k7pmw6sx/bpk-tv/166/output/166-audio_214835_und=214800-video=5254000.m3u8", kixLogo.url),
+  direct("kix", "KIX", "martial arts and action movies", "https://ec05-pop1-hlc.tv360.vn/bpk-token/7bovi6fedjgxqinuumppsxkupd4f2vdy/bpk-tv/166/output/166-audio_214835_und=214800-video=5254000.m3u8", kixLogo.url),
 ];
 
 /**

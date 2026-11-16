@@ -11,3 +11,5 @@
 - [x] Popular category first and default; Movie Max first in Popular with its logo; logo used as site logo + favicon
 - [x] Add the user's list of popular channels from the API to Popular
 - [x] Popular in the user's exact order + their direct links with logos; all channel names in capitals
+- [x] KIX: swap in the user's newer link (tokenised; expires within minutes — needs a lasting link)
+- [x] Super Sport channels start as fast as the others (stream pieces as they arrive, no background warm-up competing)

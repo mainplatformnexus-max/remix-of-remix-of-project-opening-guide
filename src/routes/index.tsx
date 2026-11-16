@@ -14,7 +14,7 @@ import { StreamStats, ChannelStrip, MovieShelf } from "@/components/tv/StreamPan
 import { ScheduleBar } from "@/components/tv/ScheduleBar";
 import { LiveDot } from "@/components/tv/ChannelBadge";
 import { cn } from "@/lib/utils";
-import { preloadStreams } from "@/lib/hls-preloader";
+import { cancelPreloads, preloadStreams } from "@/lib/hls-preloader";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -110,7 +110,10 @@ function LiveTv() {
     const timer = setTimeout(() => {
       preloadStreams(preloadKey.split("\n").filter((src) => src && src !== current.stream));
     }, 1500);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      cancelPreloads();
+    };
   }, [preloadKey, current.stream]);
 
   useEffect(() => {
