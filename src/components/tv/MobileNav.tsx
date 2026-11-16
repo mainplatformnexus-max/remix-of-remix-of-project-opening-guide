@@ -28,10 +28,10 @@ export function MobileNav({ tab, onTab }: { tab: TopTab; onTab: (t: TopTab) => v
             type="button"
             onClick={comingSoon}
             aria-label="Movie Max"
-            className="flex min-w-0 flex-col items-center gap-1 px-1.5"
+            className="flex min-w-0 flex-col items-center gap-0.5 px-1"
           >
-            <span className="rim-hot grid h-9 w-9 place-items-center rounded-full">
-              <img src={movieMaxLogo.url} alt="Movie Max" className="h-6 w-6 object-contain" />
+            <span className="rim-hot grid h-7 w-7 place-items-center rounded-full">
+              <img src={movieMaxLogo.url} alt="Movie Max" className="h-5 w-5 object-contain" />
             </span>
             <span className="text-[7px] font-extrabold leading-none tracking-widest text-cyan">
               MOVIE MAX
@@ -45,19 +45,19 @@ export function MobileNav({ tab, onTab }: { tab: TopTab; onTab: (t: TopTab) => v
                 onClick={() => onTab(id)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-w-0 flex-col items-center gap-1 rounded-xl py-1 text-[9px] font-extrabold uppercase tracking-wider transition-all duration-200",
+                  "flex min-w-0 flex-col items-center gap-0.5 rounded-lg py-0.5 text-[8px] font-extrabold uppercase tracking-wider transition-all duration-200",
                   active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <span
                   className={cn(
-                    "grid h-8 w-12 place-items-center rounded-full transition-all duration-200",
+                    "grid h-6 w-10 place-items-center rounded-full transition-all duration-200",
                     active
                       ? "bg-gradient-hot text-primary-foreground shadow-glow"
                       : "bg-transparent",
                   )}
                 >
-                  <Icon className={cn("h-4 w-4", active && "drop-shadow")} />
+                  <Icon className={cn("h-3.5 w-3.5", active && "drop-shadow")} />
                 </span>
                 {label}
               </button>
@@ -66,10 +66,10 @@ export function MobileNav({ tab, onTab }: { tab: TopTab; onTab: (t: TopTab) => v
           <button
             type="button"
             onClick={comingSoon}
-            className="flex flex-col items-center gap-1 px-1.5 text-[9px] font-extrabold uppercase tracking-wider text-foreground"
+            className="flex flex-col items-center gap-0.5 px-1 text-[8px] font-extrabold uppercase tracking-wider text-foreground"
           >
-            <span className="rim grid h-8 w-9 place-items-center rounded-full">
-              <LogIn className="h-4 w-4" />
+            <span className="rim grid h-6 w-8 place-items-center rounded-full">
+              <LogIn className="h-3.5 w-3.5" />
             </span>
             Login
           </button>
