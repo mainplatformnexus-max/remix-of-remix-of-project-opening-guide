@@ -11,6 +11,7 @@ import { TopBar, type TopTab } from "@/components/tv/TopBar";
 import { NowWatching } from "@/components/tv/NowWatching";
 import { ChannelTable } from "@/components/tv/ChannelTable";
 import { StreamStats, ChannelStrip, MovieShelf } from "@/components/tv/StreamPanels";
+import { MobileNav } from "@/components/tv/MobileNav";
 import { ScheduleBar } from "@/components/tv/ScheduleBar";
 import { LiveDot } from "@/components/tv/ChannelBadge";
 import { cn } from "@/lib/utils";
@@ -306,6 +307,7 @@ function LiveTv() {
         </div>
 
         <ScheduleBar categories={categories} current={current} onSelect={select} className="mx-2 mb-2 hidden lg:tall:block" />
+        <MobileNav tab={topTab} onTab={onTopTab} />
       </div>
     </main>
   );

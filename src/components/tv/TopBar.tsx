@@ -24,7 +24,7 @@ export function TopBar({
   onQuery: (q: string) => void;
 }) {
   return (
-    <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-border bg-frame px-3 py-2 sm:px-4">
+    <header className="hidden shrink-0 md:flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border bg-frame px-3 py-2 sm:px-4">
       <a href="https://luofilm.site" className="flex shrink-0 items-center gap-2">
         <img src={movieMaxLogo.url} alt="Movie Max" className="h-8 w-8 shrink-0 object-contain" />
         <span className="leading-none">
