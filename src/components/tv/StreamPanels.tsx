@@ -84,13 +84,37 @@ export function ChannelStrip({
 }
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
-const SHELF: { label: string; sub: string; cls: string; icon: Icon }[] = [
-  { label: "Luo Movies", sub: "Movies", cls: "bg-primary/25", icon: FilmIcon },
-  { label: "Luganda", sub: "Translated", cls: "bg-ch-sport/25", icon: FilmIcon },
-  { label: "VJ Junior", sub: "Translated", cls: "bg-ch-news/35", icon: FilmIcon },
-  { label: "Teso", sub: "Translated", cls: "bg-ch-biz/30", icon: FilmIcon },
-  { label: "Series", sub: "Episodes", cls: "bg-ch-film/30", icon: TvIcon },
-  { label: "Kids", sub: "Cartoons", cls: "bg-ch-kids/30", icon: KidsIcon },
+const SHELF: { label: string; sub: string; cls: string; icon: Icon; href: string }[] = [
+  { label: "Luo Movies", sub: "Movies", cls: "bg-primary/25", icon: FilmIcon, href: "https://luofilm.site/luo" },
+  {
+    label: "Luganda",
+    sub: "Translated",
+    cls: "bg-ch-sport/25",
+    icon: FilmIcon,
+    href: "https://luofilm.site/luganda",
+  },
+  {
+    label: "VJ Junior",
+    sub: "Translated",
+    cls: "bg-ch-news/35",
+    icon: FilmIcon,
+    href: "https://luofilm.site/luganda?vj=VJ+Junior",
+  },
+  { label: "Teso", sub: "Translated", cls: "bg-ch-biz/30", icon: FilmIcon, href: "https://luofilm.site/teso" },
+  {
+    label: "Series",
+    sub: "Episodes",
+    cls: "bg-ch-film/30",
+    icon: TvIcon,
+    href: "https://luofilm.site/category/tv",
+  },
+  {
+    label: "Kids",
+    sub: "Cartoons",
+    cls: "bg-ch-kids/30",
+    icon: KidsIcon,
+    href: "https://luofilm.site/category/animation",
+  },
 ];
 
 export function MovieShelf() {
@@ -126,7 +150,7 @@ export function MovieShelf() {
           {SHELF.map((s) => (
             <a
               key={s.label}
-              href="https://luofilm.site"
+              href={s.href}
               className={cn(
                 "flex h-9 w-[6.5rem] shrink-0 items-center justify-between gap-1 overflow-hidden rounded-[4px] px-2.5 text-left text-[11px] font-bold text-foreground/85 transition-all hover:text-foreground hover:brightness-110",
                 s.cls,
