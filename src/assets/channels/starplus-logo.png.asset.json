@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "df1d25c9-158a-435f-9592-b049d74f0e0a",
-  "project_id": "f9861550-2bff-4688-9d29-eaf761072877",
-  "url": "/__l5e/assets-v1/df1d25c9-158a-435f-9592-b049d74f0e0a/starplus-logo.png",
-  "r2_key": "a/v1/f9861550-2bff-4688-9d29-eaf761072877/df1d25c9-158a-435f-9592-b049d74f0e0a/starplus-logo.png",
-  "original_filename": "starplus-logo.png",
-  "size": 245941,
   "content_type": "image/png",
-  "created_at": "2026-11-15T17:18:16Z"
+  "created_at": "2026-11-15T17:18:16Z",
+  "original_filename": "starplus-logo.png",
+  "project_id": "beaaab38-2ad7-4a18-b6e8-e44334adeab1",
+  "r2_key": "a/v1/beaaab38-2ad7-4a18-b6e8-e44334adeab1/df1d25c9-158a-435f-9592-b049d74f0e0a/starplus-logo.png",
+  "size": 245941,
+  "url": "/__l5e/assets-v1/df1d25c9-158a-435f-9592-b049d74f0e0a/starplus-logo.png",
+  "version": 1
 }

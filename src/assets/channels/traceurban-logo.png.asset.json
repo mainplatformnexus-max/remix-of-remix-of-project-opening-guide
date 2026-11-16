@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "27398416-5942-4ed8-bee2-b27d1427f13d",
-  "project_id": "f9861550-2bff-4688-9d29-eaf761072877",
-  "url": "/__l5e/assets-v1/27398416-5942-4ed8-bee2-b27d1427f13d/traceurban-logo.png",
-  "r2_key": "a/v1/f9861550-2bff-4688-9d29-eaf761072877/27398416-5942-4ed8-bee2-b27d1427f13d/traceurban-logo.png",
-  "original_filename": "traceurban-logo.png",
-  "size": 11213,
   "content_type": "image/png",
-  "created_at": "2026-11-15T17:18:26Z"
+  "created_at": "2026-11-15T17:18:26Z",
+  "original_filename": "traceurban-logo.png",
+  "project_id": "beaaab38-2ad7-4a18-b6e8-e44334adeab1",
+  "r2_key": "a/v1/beaaab38-2ad7-4a18-b6e8-e44334adeab1/27398416-5942-4ed8-bee2-b27d1427f13d/traceurban-logo.png",
+  "size": 11213,
+  "url": "/__l5e/assets-v1/27398416-5942-4ed8-bee2-b27d1427f13d/traceurban-logo.png",
+  "version": 1
 }
