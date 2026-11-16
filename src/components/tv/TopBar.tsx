@@ -1,6 +1,7 @@
 import { Search, LogIn, Film, Crown } from "lucide-react";
 import movieMaxLogo from "@/assets/moviemax-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
+import { comingSoon } from "@/lib/coming-soon";
 import { cn } from "@/lib/utils";
 
 export type TopTab = "live" | "news" | "sport" | "guide";
@@ -25,7 +26,12 @@ export function TopBar({
 }) {
   return (
     <header className="hidden shrink-0 md:flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border bg-frame px-3 py-2 sm:px-4">
-      <a href="https://luofilm.site" className="flex shrink-0 items-center gap-2">
+      <button
+        type="button"
+        onClick={comingSoon}
+        aria-label="Movie Max"
+        className="flex shrink-0 items-center gap-2"
+      >
         <img src={movieMaxLogo.url} alt="Movie Max" className="h-8 w-8 shrink-0 object-contain" />
         <span className="leading-none">
           <span className="block text-sm font-extrabold tracking-wide text-cyan">MOVIE MAX</span>
@@ -33,7 +39,7 @@ export function TopBar({
             Live TV
           </span>
         </span>
-      </a>
+      </button>
 
       <nav className="order-3 flex w-full justify-center gap-1 md:order-none md:w-auto md:flex-1">
         <div className="rim flex items-center gap-1 rounded-full p-1">
@@ -74,10 +80,8 @@ export function TopBar({
             <Crown /> Subscribe
           </a>
         </Button>
-        <Button asChild variant="softLight" size="xs" className="uppercase">
-          <a href="https://luofilm.site">
-            <LogIn /> Login
-          </a>
+        <Button variant="softLight" size="xs" className="uppercase" onClick={comingSoon}>
+          <LogIn /> Login
         </Button>
       </div>
     </header>
