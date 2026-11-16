@@ -15,52 +15,65 @@ export function MobileNav({ tab, onTab }: { tab: TopTab; onTab: (t: TopTab) => v
   return (
     <nav
       aria-label="Mobile navigation"
-      className="shrink-0 border-t border-border bg-frame px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] md:hidden"
+      className="shrink-0 bg-gradient-to-t from-background via-background/95 to-transparent px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 md:hidden"
     >
-      <div className="grid grid-cols-[auto_repeat(4,minmax(0,1fr))_auto] items-center gap-1">
-        <button
-          type="button"
-          onClick={comingSoon}
-          aria-label="Movie Max"
-          className="flex min-w-0 flex-col items-center gap-0.5 px-1"
-        >
-          <img src={movieMaxLogo.url} alt="Movie Max" className="h-7 w-7 shrink-0 object-contain" />
-          <span className="text-[8px] font-extrabold leading-none tracking-wide text-cyan">MOVIE MAX</span>
-        </button>
-        {TABS.map(({ id, label, Icon }) => {
-          const active = tab === id;
-          return (
-            <button
-              key={id}
-              onClick={() => onTab(id)}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex min-w-0 flex-col items-center gap-0.5 rounded-xl py-1 text-[10px] font-extrabold uppercase tracking-wide transition-colors",
-                active ? "text-primary" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <span
+      <div className="relative rounded-2xl border border-border bg-glass shadow-frame backdrop-blur-xl">
+        {/* top gradient hairline */}
+        <span
+          aria-hidden
+          className="absolute inset-x-6 top-0 h-px bg-gradient-hot opacity-70"
+        />
+        <div className="grid grid-cols-[auto_repeat(4,minmax(0,1fr))_auto] items-center gap-0.5 px-2 py-2">
+          <button
+            type="button"
+            onClick={comingSoon}
+            aria-label="Movie Max"
+            className="flex min-w-0 flex-col items-center gap-1 px-1.5"
+          >
+            <span className="rim-hot grid h-9 w-9 place-items-center rounded-full">
+              <img src={movieMaxLogo.url} alt="Movie Max" className="h-6 w-6 object-contain" />
+            </span>
+            <span className="text-[7px] font-extrabold leading-none tracking-widest text-cyan">
+              MOVIE MAX
+            </span>
+          </button>
+          {TABS.map(({ id, label, Icon }) => {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                onClick={() => onTab(id)}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "grid h-7 w-11 place-items-center rounded-full transition-colors",
-                  active && "bg-primary text-primary-foreground shadow-soft",
+                  "flex min-w-0 flex-col items-center gap-1 rounded-xl py-1 text-[9px] font-extrabold uppercase tracking-wider transition-all duration-200",
+                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon className="h-4 w-4" />
-              </span>
-              {label}
-            </button>
-          );
-        })}
-        <button
-          type="button"
-          onClick={comingSoon}
-          className="flex flex-col items-center gap-0.5 px-1 text-[10px] font-extrabold uppercase tracking-wide text-foreground"
-        >
-          <span className="rim grid h-7 w-9 place-items-center rounded-full">
-            <LogIn className="h-4 w-4" />
-          </span>
-          Login
-        </button>
+                <span
+                  className={cn(
+                    "grid h-8 w-12 place-items-center rounded-full transition-all duration-200",
+                    active
+                      ? "bg-gradient-hot text-primary-foreground shadow-glow"
+                      : "bg-transparent",
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", active && "drop-shadow")} />
+                </span>
+                {label}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={comingSoon}
+            className="flex flex-col items-center gap-1 px-1.5 text-[9px] font-extrabold uppercase tracking-wider text-foreground"
+          >
+            <span className="rim grid h-8 w-9 place-items-center rounded-full">
+              <LogIn className="h-4 w-4" />
+            </span>
+            Login
+          </button>
+        </div>
       </div>
     </nav>
   );
