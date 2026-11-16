@@ -1,6 +1,11 @@
 const FEED = "https://magic1xtra.com/api-proxy.php?path=";
 const SUPERSPORT_CATEGORY_ID = 193;
 const UPSTREAM_ORIGIN = "http://197.220.88.26:2200";
+/**
+ * The hosted server runtime refuses to fetch bare IP addresses, so requests go out through a
+ * wildcard-DNS name that resolves to the same fixed IP. Validation still uses UPSTREAM_ORIGIN.
+ */
+const UPSTREAM_FETCH_ORIGIN = "http://197.220.88.26.sslip.io:2200";
 /** Super Sport links in the feed rarely change; a long cache keeps the feed lookup off the play path. */
 const SOURCE_CACHE_MS = 10 * 60_000;
 
@@ -61,6 +66,18 @@ export function isAllowedSuperSportSource(
   } catch {
     return false;
   }
+}
+
+/** Turn an approved upstream URL into the URL the server actually fetches. */
+export function toUpstreamFetchUrl(target: URL): URL {
+  if (target.origin !== UPSTREAM_ORIGIN) throw new Error("Stream resource is outside the approved source.");
+  return new URL(`${target.pathname}${target.search}`, UPSTREAM_FETCH_ORIGIN);
+}
+
+/** Map a URL on the fetch host (e.g. a redirect location) back to the approved upstream origin. */
+export function fromUpstreamFetchUrl(url: URL): URL {
+  if (url.origin !== UPSTREAM_FETCH_ORIGIN) return url;
+  return new URL(`${url.pathname}${url.search}`, UPSTREAM_ORIGIN);
 }
 
 function feedUrl(path: string) {

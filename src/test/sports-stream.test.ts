@@ -68,3 +68,15 @@ describe("Super Sport stream relay restrictions", () => {
     ).toThrow();
   });
 });
+
+describe("Super Sport relay fetch address", () => {
+  it("fetches the fixed upstream through its named address, not the bare IP", async () => {
+    const { toUpstreamFetchUrl, fromUpstreamFetchUrl } = await import("@/lib/sports-stream.server");
+    const fetchUrl = toUpstreamFetchUrl(source);
+    expect(fetchUrl.href).toBe(
+      "http://197.220.88.26.sslip.io:2200/AFR-EX/SuperSport_Premier_League_FHD-dstv/index.m3u8?token=",
+    );
+    expect(fromUpstreamFetchUrl(fetchUrl).href).toBe(source.href);
+    expect(() => toUpstreamFetchUrl(new URL("https://example.com/live.m3u8"))).toThrow();
+  });
+});

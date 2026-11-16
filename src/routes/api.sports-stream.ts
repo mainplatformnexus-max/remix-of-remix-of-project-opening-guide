@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  fromUpstreamFetchUrl,
   getSuperSportSource,
   resolveSuperSportTarget,
   rewriteSuperSportManifest,
   SuperSportSourceNotFoundError,
+  toUpstreamFetchUrl,
 } from "@/lib/sports-stream.server";
 
 function textResponse(message: string, status: number) {
@@ -49,7 +51,7 @@ export const Route = createFileRoute("/api/sports-stream")({
 
         let upstreamResponse: Response;
         try {
-          upstreamResponse = await fetch(target, {
+          upstreamResponse = await fetch(toUpstreamFetchUrl(target), {
             headers: upstreamHeaders,
             redirect: "manual",
             signal: AbortSignal.timeout(15_000),
@@ -58,7 +60,7 @@ export const Route = createFileRoute("/api/sports-stream")({
           if (upstreamResponse.status >= 300 && upstreamResponse.status < 400) {
             const location = upstreamResponse.headers.get("location");
             if (!location) return textResponse("The stream source redirected unexpectedly.", 502);
-            const redirected = new URL(location, target);
+            const redirected = fromUpstreamFetchUrl(new URL(location, toUpstreamFetchUrl(target)));
             if (redirected.origin !== source.origin) {
               return textResponse("The stream source redirected unexpectedly.", 502);
             }
@@ -66,7 +68,7 @@ export const Route = createFileRoute("/api/sports-stream")({
               source,
               `${redirected.pathname}${redirected.search}`,
             );
-            upstreamResponse = await fetch(safeRedirect, {
+            upstreamResponse = await fetch(toUpstreamFetchUrl(safeRedirect), {
               headers: upstreamHeaders,
               redirect: "manual",
               signal: AbortSignal.timeout(15_000),
@@ -76,7 +78,10 @@ export const Route = createFileRoute("/api/sports-stream")({
           return textResponse("The stream source could not be reached.", 502);
         }
 
-        if (!upstreamResponse.ok) return textResponse("The stream source returned an error.", 502);
+        if (!upstreamResponse.ok) {
+          console.error("sports-stream upstream error", upstreamResponse.status, target.pathname);
+          return textResponse("The stream source returned an error.", 502);
+        }
 
         const isPlaylist =
           target.pathname.toLowerCase().endsWith(".m3u8") ||

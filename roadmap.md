@@ -13,3 +13,4 @@
 - [x] Popular in the user's exact order + their direct links with logos; all channel names in capitals
 - [x] KIX: swap in the user's newer link (tokenised; expires within minutes — needs a lasting link)
 - [x] Super Sport channels start as fast as the others (stream pieces as they arrive, no background warm-up competing)
+- [x] Super Sport offline on the hosted preview: relay now reaches the server by name (hosting blocks bare-number addresses)
