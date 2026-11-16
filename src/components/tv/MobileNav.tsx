@@ -15,7 +15,7 @@ export function MobileNav({ tab, onTab }: { tab: TopTab; onTab: (t: TopTab) => v
   return (
     <nav
       aria-label="Mobile navigation"
-      className="shrink-0 bg-gradient-to-t from-background via-background/95 to-transparent px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 md:hidden"
+      className="shrink-0 bg-gradient-to-t from-background via-background/95 to-transparent px-2.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 md:hidden"
     >
       <div className="relative rounded-2xl border border-border bg-glass shadow-frame backdrop-blur-xl">
         {/* top gradient hairline */}
@@ -23,7 +23,7 @@ export function MobileNav({ tab, onTab }: { tab: TopTab; onTab: (t: TopTab) => v
           aria-hidden
           className="absolute inset-x-6 top-0 h-px bg-gradient-hot opacity-70"
         />
-        <div className="grid grid-cols-[auto_repeat(4,minmax(0,1fr))_auto] items-center gap-0.5 px-2 py-2">
+        <div className="grid grid-cols-[auto_repeat(4,minmax(0,1fr))_auto] items-center gap-0.5 px-1.5 py-1">
           <button
             type="button"
             onClick={comingSoon}
