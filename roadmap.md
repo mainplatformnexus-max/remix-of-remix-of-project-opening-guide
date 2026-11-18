@@ -14,3 +14,4 @@
 - [x] KIX: swap in the user's newer link (tokenised; expires within minutes — needs a lasting link)
 - [x] Super Sport channels start as fast as the others (stream pieces as they arrive, no background warm-up competing)
 - [x] Super Sport offline on the hosted preview: relay now reaches the server by name (hosting blocks bare-number addresses)
+- [x] Include the original website and app-owned channel logos at their existing public paths and verify they load.
